@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <title>Tugas 4</title>
+
+    <!--BAGIAN CSS-->
+    <style>
+      /*Style Semua*/
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: navy;
+        /* Warna latar belakang navy */
+        color: white;
+        /* Warna teks putih */
+        margin: 0;
+        padding: 20px;
+      }
+      /*Header profil */
+
+      .header {
+        background-color: #001f3f;
+        /* Warna header lebih gelap */
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        /* Menggunakan flexbox */
+        align-items: center;
+        /* Rata tengah vertikal */
+      }
+      /*Foto profil */
+
+      .header img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        /* Membuat gambar lingkaran */
+        margin-right: 20px;
+      }
+      /*Container form */
+
+      .container {
+        background-color: #002366;
+        /* Warna container */
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+      /*Input dan tombol */
+
+      input,
+      button {
+        padding: 8px;
+        margin: 5px;
+        border-radius: 4px;
+      }
+
+      button {
+        background-color: #001f3f;
+        /* Warna tombol */
+        color: white;
+        border: none;
+        cursor: pointer;
+        /* Mengubah kursor saat dihover */
+      }
+      /*Grup input */
+
+      .input-group {
+        margin: 10px 0;
+        /* Spasi vertikal antar input */
+      }
+    </style>
+  </head>
+
+  <body>
+    <!--BAGIAN HTML-->
+
+    <!-- Header profil -->
+    <div class="header">
+      <img src="foto.jpg" alt="Foto Profil" />
+      <div>
+        <h2>Iis Sukmawati</h2>
+        <h3>235314001</h3>
+      </div>
+    </div>
+
+    <!-- Form input data diri -->
+    <div class="container" id="form1">
+      <h3>Isi Data Diri</h3>
+      <div class="input-group">
+        <label>Nama:</label>
+        <input type="text" id="nama" />
+      </div>
+      <div class="input-group">
+        <label>Jumlah Pilihan:</label>
+        <input type="number" id="jumlah" min="1" />
+      </div>
+      <button onclick="tampilkanPilihan()">OK</button>
+    </div>
+
+    <!-- Form input pilihan (awalnya tersembunyi) -->
+    <div id="form2" class="container" style="display: none">
+      <h3>Isi Pilihan</h3>
+      <div id="daftarPilihan"></div>
+      <button onclick="tampilkanRadio()">OK</button>
+    </div>
+
+    <!-- Form pemilihan radio button (awalnya tersembunyi) -->
+    <div id="form3" class="container" style="display: none">
+      <h3>Pilih Salah Satu</h3>
+      <div id="opsiPilihan"></div>
+      <button onclick="tampilkanHasil()">OK</button>
+    </div>
+
+    <!-- Hasil akhir (awalnya tersembunyi) -->
+    <div id="hasil" class="container" style="display: none"></div>
+
+    <!-- ====================== BAGIAN JAVASCRIPT ====================== -->
+    <script>
+      // Variabel global untuk menyimpan data
+      var semuaPilihan = []; // Menyimpan daftar pilihan
+      var pilihanAkhir = ""; // Menyimpan pilihan terakhir
+
+      // Fungsi untuk menampilkan input pilihan
+      function tampilkanPilihan() {
+        // Ambil nilai dari form
+        var nama = document.getElementById("nama").value;
+        var jumlah = document.getElementById("jumlah").value;
+
+        // Validasi input
+        if (nama === "" || jumlah === "" || jumlah < 1) {
+          alert("Harap isi semua kolom!");
+          return;
+        }
+
+        // Tampilkan form pilihan
+        document.getElementById("form2").style.display = "block";
+
+        // Bersihkan konten sebelumnya
+        var container = document.getElementById("daftarPilihan");
+        container.innerHTML = "";
+
+        // Buat input pilihan sesuai jumlah
+        for (var i = 1; i <= jumlah; i++) {
+          var div = document.createElement("div");
+          div.className = "input-group";
+          div.innerHTML =
+            "<label>Pilihan " +
+            i +
+            ":</label>" +
+            '<input type="text" class="input-pilihan">';
+          container.appendChild(div);
+        }
+      }
+
+      // Fungsi untuk menampilkan radio button
+      function tampilkanRadio() {
+        // Kumpulkan semua input pilihan
+        var inputs = document.getElementsByClassName("input-pilihan");
+        semuaPilihan = [];
+
+        // Validasi dan simpan pilihan
+        for (var i = 0; i < inputs.length; i++) {
+          if (inputs[i].value === "") {
+            alert("Harap isi semua pilihan!");
+            return;
+          }
+          semuaPilihan.push(inputs[i].value);
+        }
+
+        // Tampilkan form radio button
+        document.getElementById("form3").style.display = "block";
+
+        // Buat radio button
+        var container = document.getElementById("opsiPilihan");
+        container.innerHTML = "";
+
+        for (var j = 0; j < semuaPilihan.length; j++) {
+          var label = document.createElement("label");
+          var radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = "pilihan";
+          radio.value = semuaPilihan[j];
+          if (j === 0) radio.checked = true; // Set pilihan pertama sebagai default
+
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(semuaPilihan[j]));
+          container.appendChild(label);
+          container.appendChild(document.createElement("br"));
+        }
+      }
+
+      // Fungsi untuk menampilkan hasil akhir
+      function tampilkanHasil() {
+        // Cari radio button yang dipilih
+        var radios = document.getElementsByName("pilihan");
+
+        for (var k = 0; k < radios.length; k++) {
+          if (radios[k].checked) {
+            pilihanAkhir = radios[k].value;
+            break;
+          }
+        }
+
+        // Tampilkan hasil
+        var hasil = document.getElementById("hasil");
+        hasil.innerHTML =
+          "<h3>Hasil Akhir</h3>" +
+          "<p>Halo, nama saya " +
+          document.getElementById("nama").value +
+          ", saya mempunyai " +
+          semuaPilihan.length +
+          " pilihan yaitu " +
+          semuaPilihan.join(", ") +
+          ", dan saya memilih " +
+          pilihanAkhir +
+          "</p>";
+        hasil.style.display = "block";
+      }
+    </script>
+  </body>
+</html>
